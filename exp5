@@ -1,0 +1,47 @@
+import math
+from collections import Counter
+
+# Training dataset
+data = [
+    [5.5, 65, 'Fit'],
+    [6.0, 72, 'Fit'],
+    [5.8, 75, 'Fit'],
+    [5.2, 60, 'Not Fit'],
+    [5.0, 55, 'Not Fit'],
+    [5.1, 58, 'Not Fit']
+]
+
+# Euclidean distance function
+def euclidean_distance(p1, p2):
+    distance = 0
+    for i in range(len(p1)):
+        distance += (p1[i] - p2[i]) ** 2
+    return math.sqrt(distance)
+
+# K-NN algorithm
+def knn(training_data, test_point, k):
+    distances = []
+
+    for row in training_data:
+        features = row[:-1]
+        label = row[-1]
+        dist = euclidean_distance(features, test_point)
+        distances.append((dist, label))
+
+    # Sort by distance
+    distances.sort(key=lambda x: x[0])
+
+    # Take K nearest neighbors
+    neighbors = distances[:k]
+    labels = [label for _, label in neighbors]
+
+    # Majority voting
+    prediction = Counter(labels).most_common(1)[0][0]
+    return prediction
+
+# Test sample
+test_sample = [5.4, 62]
+k = 3
+
+result = knn(data, test_sample, k)
+print("Predicted Class:", result)
